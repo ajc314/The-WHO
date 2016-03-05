@@ -40,7 +40,7 @@ for i = 1:numel(lifeexpectdouble(:,2)),
     end;
 end;
 figure;
-plot(lifeexpectx, lifeexpecty, 'x')
+plot3(lifeexpectx, lifeexpecty, lifeexpectx, 'x')
 
 
 Factor1temp = zeros(numel(lifeexpectdouble(:,2)) ,2);
@@ -101,7 +101,7 @@ FactorTable = table(Factors)
 
 FactorTableFinal = horzcat(Countrynamesnew, FactorTable)
 
-Factorx = linspace(1,194,194)';
+Factorx = linsace 
 
 %Fix for brunei, san marino, south sudan
 
@@ -109,14 +109,7 @@ Factorx = linspace(1,194,194)';
 %Principal Component Analysis 
 % Make matrix of all factors 
 
-
-figure;
-plot3(Factors(:,1), Factors(:,2), Factors(:,3), 'x')
+plot3d
 
 
-[coeff, Score, Latent] = pca(Factors); 
-
-figure;
-
-plot(Score(:,1), Score(:,2), '.')
 
