@@ -47,6 +47,12 @@ Factor1temp = zeros(numel(lifeexpectdouble(:,2)) ,2);
 Factor1= zeros(191,1);
 Factor2= zeros(191,1);
 Factor3= zeros(191,1);
+Factor4= zeros(191,1);
+Factor5= zeros(191,1);
+Factor6= zeros(191,1);
+FactorNaN = zeros(191,2);
+LifeDiff = zeros(191,1);
+
 
 n = 1;
 for i = 1:numel(lifeexpectdouble(:,2)),
@@ -69,37 +75,116 @@ Countrynamesnew = Countrynamesnew([1:24, 26:147, 149:160, 162:end],:);
 
 
 % Remove brunei san marino and south sudan
-Factor1temp = Factor1temp([1:99,101:591,593:643,645:end],:)
+Factor1temp2 = Factor1temp([1:99,102:591,594:643,646:end],:)
 
 n = 1;
-
-for i = 1:numel(Factor1temp(:,2)),
-    if Factor1temp(i,2) == 2000,
-        Factor1(n,1) = Factor1temp(i,1);
+m = 1;
+for i = 1:numel(Factor1temp2(:,2)),
+    if Factor1temp2(i,2) == 2000,
+        Factor1(n,1) = Factor1temp2(i,1);
         n = n+1;
+    end;
+        
+    if Factor1temp2(i,2) == 1990,
+        Factor4(m,1) = Factor1temp2(i,1);
+        m = m+1;  
     end;
 end;
 
+for i = 1:numel(Factor1),
+    LifeDiff(i,1) = Factor1(i,1)/ Factor4 (i,1);
+end;
+
 n = 1;
-for i = 1:numel(sanitationdouble(:,1)),
+for i = 1:(numel(sanitationdouble(:,1)) - 1),
     if sanitationdouble(i,1) == 2000,
         Factor2(n,1) = sanitationdouble(i,4);
+        if sanitationdouble(i+1, 1) == 1990,
+            Factor5(n,1) = sanitationdouble(i+1, 4);
+        end
         n = n+1;
     end;
 end;
+
 n = 1;
 for i = 1:numel(sanitationdouble(:,1)),
     if sanitationdouble(i,1) == 2000,
         Factor3(n,1) = sanitationdouble(i,7);
+        if sanitationdouble(i+1, 1) == 1990,
+            Factor6(n,1) = sanitationdouble(i+1, 7);
+            
+        end;
         n = n+1;
     end;
 end;
 
+for i = 1:numel(Factor2)
+    if isnan(Factor5(i,1)) == 0
+        if isnan(Factor6(i,1)) == 0
+            FactorNaN(i,1) = Factor5(i,1) + Factor6(i,1);
+        end;
+    end;
+end;
+        
+%{
+n = 1;
+
+for i = 1:numel(Factor1temp(:,2)),
+    if Factor1temp(i,2) == 1990,
+        Factor4(n,1) = Factor1temp(i,1);
+        n = n+1;
+    end;
+end;
+
+n = 1;
+for i = 1:numel(sanitationdouble(:,1)),
+    if sanitationdouble(i,1) == 1990,
+        Factor5(n,1) = sanitationdouble(i,4);
+        n = n+1;
+    end;
+end;
+n = 1;
+for i = 1:numel(sanitationdouble(:,1)),
+    if sanitationdouble(i,1) == 1990,
+        Factor6(n,1) = sanitationdouble(i,7);
+        n = n+1;
+    end;
+end;
+%}
+
+
 Factors = horzcat(Factor1, Factor2, Factor3);
 
-FactorTable = table(Factors)
+FactorTable1 = table(Factor1,Factor2,Factor3);
+MakeTableLife = table(Factor1, Factor4, LifeDiff);
+MakeTableSan = table(Factor2, Factor5, Factor3, Factor6);
+LifeCompare = horzcat(Countrynamesnew(FactorNaN(:,1) ~= 0,1), MakeTableLife(FactorNaN(:,1) ~=0, :));
 
-FactorTableFinal = horzcat(Countrynamesnew, FactorTable)
+SanitationTableFix = horzcat(Countrynamesnew(FactorNaN(:,1) ~= 0,1), MakeTableSan(FactorNaN(:,1) ~= 0,:));
+SanitationCompareDouble = (SanitationTableFix{:,2:5});
+
+K = 1.25;
+SanCompare = table;
+WaterCompare = table;
+n = 1
+for i = 1:numel(SanitationCompareDouble(:,1))
+    %if SanitationCompareDouble(i,3) >= K * SanitationCompareDouble(i,4)
+        SanCompare{n,1} = SanitationTableFix{i,1};
+        SanCompare{n,2} = SanitationCompareDouble(i,3) / SanitationCompareDouble(i,4);
+        n = n + 1;
+    %end;
+end;
+n = 1;
+for i = 1:numel(SanitationCompareDouble(:,1))
+    %if SanitationCompareDouble(i,1) >= K * SanitationCompareDouble(i,2)
+        WaterCompare{n,1} = SanitationTableFix{i,1};
+        WaterCompare{n,2} = SanitationCompareDouble(i,1) / SanitationCompareDouble(i,2);
+        n = n + 1;
+    %end;
+end;
+%Add life expect change for 1990
+
+
 
 Factorx = linspace(1,194,194)';
 
@@ -119,4 +204,10 @@ plot3(Factors(:,1), Factors(:,2), Factors(:,3), 'x')
 figure;
 
 plot(Score(:,1), Score(:,2), '.')
+
+
+figure;
+plot(SanCompare{:,2}, LifeCompare{:,4}, 'x')
+
+
 
