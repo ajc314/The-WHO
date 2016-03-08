@@ -1,6 +1,6 @@
 deathcause = readtable('cause_of_death.xlsx');
 sanitation = readtable('sanitation.xlsx');
-lifeexpect = readtable('life_expectancy.xlsx');
+lifeexpect = readtable('life_expectancy_new.xlsx');
 choleradeath = readtable('cholera_deaths.xlsx');
 choleracase = readtable('cholera_cases.xlsx');
 cholerafatal = readtable('cholera_case_fatality.xlsx');
@@ -39,8 +39,10 @@ for i = 1:numel(lifeexpectdouble(:,2)),
         p = p+1;
     end;
 end;
-figure;
-plot(lifeexpectx, lifeexpecty, 'x')
+
+
+%figure;
+%plot(lifeexpectx, lifeexpecty, 'x')
 
 
 Factor1temp = zeros(numel(lifeexpectdouble(:,2)) ,2);
@@ -195,7 +197,7 @@ Factorx = linspace(1,194,194)';
 % Make matrix of all factors 
 
 
-figure;
+%{
 plot3(Factors(:,1), Factors(:,2), Factors(:,3), 'x')
 
 
@@ -208,6 +210,36 @@ plot(Score(:,1), Score(:,2), '.')
 
 figure;
 plot(SanCompare{:,2}, LifeCompare{:,4}, 'x')
+%}
 
-figure
+countries = shaperead('cntry02', 'UseGeoCoords', true);
+
+Factor1tbl = table(Factor1);
+LifeMap = horzcat(Countrynamesnew,Factor1tbl);
+[countries.field19]=deal(NaN);
+for i = 1:length(countries)
+    tempx = countries(i).CNTRY_NAME;
+    for j = 1:numel(LifeMap{:,1}),
+        if strcmp(tempx,LifeMap{j,1}) == 1,
+            countries(i).field19 = LifeMap{j,2};
+        end;
+    end;
+end;
+    
+
+
+
+
+maxlife = max([countries.field19])
+colors = flipud(winter(10));
+
+densityColors = makesymbolspec('Polygon', {'field19', ...
+   [0 maxlife], 'FaceColor', colors});
+
+figure; 
+geoshow(countries, 'DisplayType', 'polygon', ...
+   'SymbolSpec', densityColors)
+caxis([0 maxlife])
+colormap(colors)
+colorbar
 
