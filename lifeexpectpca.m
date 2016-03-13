@@ -4,6 +4,8 @@ lifeexpect = readtable('life_expectancy.xlsx');
 choleradeath = readtable('cholera_deaths.xlsx');
 choleracase = readtable('cholera_cases.xlsx');
 cholerafatal = readtable('cholera_case_fatality.xlsx');
+countryregion = readtable('countryregionfix2.xlsx');
+
 
 lifeexpectdouble = str2double(lifeexpect{:,2:11});
 lifeexpectyear = lifeexpectdouble(:,2);
@@ -12,6 +14,7 @@ deathcausedouble = str2double(deathcause{:,2:5});
 choleradeathdouble = str2double(choleradeath{:,2:3});
 choleracasedouble = str2double(choleracase{:,2:3});
 cholerafataldouble = str2double(cholerafatal{:,2:3});
+
 
 
 lifeexpectx = zeros(194, 3);
@@ -195,10 +198,113 @@ Factorx = linspace(1,194,194)';
 % Make matrix of all factors 
 
 
+%make submatricies for each region
+
+reigonlist = table;
+for i = 1:numel(Countrynamesnew{:,1})
+    tempx = Countrynamesnew{i,1};
+    for j = 1:numel(countryregion{:,1}),
+        if strcmp(tempx,countryregion{j,1}) == 1,
+            reigonlist{i,1} = countryregion{j,3};
+        end;
+    end;
+end;
+
+regionplot = horzcat(FactorTable1, reigonlist);
+%}
+
+% Leave out New Zealand because it's dumb and doesn't have san data
+% Plot submatricies by region
+
+
+
+Africa = regionplot(strcmp(regionplot{:,4}, 'Africa') == 1, :);
+Asia = regionplot(strcmp(regionplot{:,4}, 'Asia') == 1, :);
+NorthAm = regionplot(strcmp(regionplot{:,4}, 'North America') == 1, :);
+Oceania = regionplot(strcmp(regionplot{:,4}, 'Oceania') == 1, :);
+SouthAm = regionplot(strcmp(regionplot{:,4}, 'South America') == 1, :);
+Europe = regionplot(strcmp(regionplot{:,4}, 'Europe') == 1, :);
+
+%correlation coefficients
+A = regionplot{[1:120, 122:end],1}; %life
+B = regionplot{[1:120, 122:end],2}; %water
+C = regionplot{[1:120, 122:end],3}; %san
+
+
+xA = linspace(min(A),max(A));
+xB = linspace(min(B),max(B));
+xC = linspace(min(C),max(C));
+
+P1 = polyfit(B,A,1);
+P2 = polyfit(C,A,1);
+P3 = polyfit(C,B,1);
+
+y1 = polyval(P1,xB);
+y2 = polyval(P2,xC);
+y3 = polyval(P3,xC);
+
+r1 = corrcoef(B,A)
+r2 = corrcoef(C,A)
+r3 = corrcoef(C,B)
+
+
+ 
+
 figure;
-plot3(Factors(:,1), Factors(:,2), Factors(:,3), 'x')
+hold on
+
+plot3(Europe{:,1}, Europe{:,2}, Europe{:,3}, 'x')
+plot3(Africa{:,1}, Africa{:,2}, Africa{:,3}, 'x')
+plot3(Asia{:,1}, Asia{:,2}, Asia{:,3}, 'x')
+plot3(NorthAm{:,1}, NorthAm{:,2}, NorthAm{:,3}, 'x')
+plot3(SouthAm{:,1}, SouthAm{:,2}, SouthAm{:,3}, 'x')
+plot3(Oceania{:,1}, Oceania{:,2}, Oceania{:,3}, 'x')
 
 
+
+
+legend('Europe','Africa','Asia','North America','South America', 'Oceania')
+xlabel('Life Expectancy, years')
+ylabel('Access to clean water, %')
+zlabel('Access to sanitation, %')
+title('3D Scatterplot of Life Expectancy, Clean Water, and Sanitation')
+
+
+grid on
+
+figure;
+plot(B,A,'.')
+hold on
+plot(xB,y1)
+hold off
+grid on
+xlabel('Access to Clean Water, %')
+ylabel('Life Expectancy, years')
+title('Life Expectancy vs. Clean Water, r^2 = .797')
+
+figure;
+plot(C,A,'.')
+hold on
+plot(xC,y2)
+hold off
+grid on
+xlabel('Access to Sanitation, %')
+ylabel('Life Expectancy, years')
+title('Life Expectancy vs. Sanitation, r^2 = .844')
+
+figure;
+plot(C,B,'.')
+hold on
+plot(xC,y3)
+hold off
+grid on
+xlabel('Access to Sanitation, %')
+ylabel('Access to Clean Water, %')
+title('Clean Water vs. Sanitation, r^2 = .829')
+
+
+
+%{
 [coeff, Score, Latent] = pca(Factors); 
 
 figure;
@@ -210,4 +316,5 @@ figure;
 plot(SanCompare{:,2}, LifeCompare{:,4}, 'x')
 
 figure
+%}
 
