@@ -388,7 +388,7 @@ WaterColors2015 = makesymbolspec('Polygon', {'field24', ...
 
 figure; 
 
-subplot(3,1,1)
+subplot(2,1,1)
 geoshow(countries, 'DisplayType', 'polygon', ...
    'SymbolSpec', LifeColors1990)
 caxis([35 maxlife])
@@ -399,7 +399,7 @@ ylabel(h1, 'Years')
 xlabel('1990')
 showaxes('off')
 title('Life Expectancies by Country, 1990-2013')
-
+%{
 subplot(3,1,2)
 geoshow(countries, 'DisplayType', 'polygon', ...
    'SymbolSpec', LifeColors2000)
@@ -410,9 +410,9 @@ h2 = colorbar;
 ylabel(h2, 'Years')
 xlabel('2000')
 showaxes('off')
+%}
 
-
-subplot(3,1,3)
+subplot(2,1,2)
 geoshow(countries, 'DisplayType', 'polygon', ...
    'SymbolSpec', LifeColors2013)
 caxis([35 maxlife])
@@ -425,7 +425,7 @@ showaxes('off')
 
 figure;
 
-subplot(3,1,1)
+subplot(2,1,1)
 geoshow(countries, 'DisplayType', 'polygon', ...
    'SymbolSpec', WaterColors1990)
 caxis([0 maxwater])
@@ -436,7 +436,7 @@ ylabel(h4, '% Access to Clean Water')
 xlabel('1990')
 showaxes('off')
 title('Access to Clean Water, 1990-2015')
-
+%{
 subplot(3,1,2)
 geoshow(countries, 'DisplayType', 'polygon', ...
    'SymbolSpec', WaterColors2000)
@@ -447,9 +447,9 @@ h5 = colorbar;
 ylabel(h5, '% Access to Clean Water')
 xlabel('2000')
 showaxes('off')
+%}
 
-
-subplot(3,1,3)
+subplot(2,1,2)
 geoshow(countries, 'DisplayType', 'polygon', ...
    'SymbolSpec', WaterColors2015)
 caxis([0 maxwater])
@@ -463,7 +463,7 @@ showaxes('off')
 
 figure; 
 
-subplot(3,1,1)
+subplot(2,1,1)
 geoshow(countries, 'DisplayType', 'polygon', ...
    'SymbolSpec', SanColors1990)
 caxis([0 maxsan])
@@ -474,7 +474,7 @@ ylabel(h7, '% Access to Sanitation')
 xlabel('1990')
 showaxes('off')
 title('Access to Sanitation, 1990-2015')
-
+%{
 subplot(3,1,2)
 geoshow(countries, 'DisplayType', 'polygon', ...
    'SymbolSpec', SanColors2000)
@@ -485,9 +485,9 @@ h8 = colorbar;
 ylabel(h8, '% Access to Sanitation')
 xlabel('2000')
 showaxes('off')
+%}
 
-
-subplot(3,1,3)
+subplot(2,1,2)
 geoshow(countries, 'DisplayType', 'polygon', ...
    'SymbolSpec', SanColors2015)
 caxis([0 maxsan])
@@ -501,7 +501,7 @@ showaxes('off')
 
 figure; 
 
-
+%{
 geoshow(countries, 'DisplayType', 'polygon', ...
    'SymbolSpec', DeltaLife)
 caxis([-20 30])
@@ -511,6 +511,7 @@ h10 = colorbar;
 ylabel(h10, 'Years')
 showaxes('off')
 title('Change in Life Expectancy, 1990-2013')
+%}
 
 
 

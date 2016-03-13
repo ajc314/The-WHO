@@ -1,2 +1,0 @@
-figure;
-hold on
