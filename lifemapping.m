@@ -216,27 +216,6 @@ end;
 
 Factorx = linspace(1,194,194)';
 
-%Fix for brunei, san marino, south sudan
-
-
-%Principal Component Analysis 
-% Make matrix of all factors 
-
-
-%{
-plot3(Factors(:,1), Factors(:,2), Factors(:,3), 'x')
-
-
-[coeff, Score, Latent] = pca(Factors); 
-
-figure;
-
-plot(Score(:,1), Score(:,2), '.')
-
-
-figure;
-plot(SanCompare{:,2}, LifeCompare{:,4}, 'x')
-%}
 
 countries = shaperead('cntry02', 'UseGeoCoords', true);
 
